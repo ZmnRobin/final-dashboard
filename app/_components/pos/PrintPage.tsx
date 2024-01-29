@@ -6,6 +6,7 @@ import { createNewOrder } from "@/app/_lib/apiCall/manager/orderApi";
 import Loader from "../common/Loader";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { getNameFromCookies, getPhoneFromCookies } from "@/app/_lib/utils/utilityFunction";
 
 export interface CartProps {
   cartItems: SelectedFoodItemType[];
@@ -30,7 +31,11 @@ const PrintPage: React.FC<CartProps> = (props: CartProps) => {
       totalBill: totalPayment,
       status: "in progress",
       discount: 0,
+      issuedBy:getNameFromCookies(),
+      issuedPhone:getPhoneFromCookies()
     }
+
+    console.log("order data",orderData)
       setError('')
       try {
           await createNewOrder(orderData).then(() => {

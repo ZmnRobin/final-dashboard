@@ -35,9 +35,11 @@ export default function Login() {
       });
   
       if (response.status === 200) {
-        const { accessToken, role } = response.data;
+        const { accessToken, role ,name ,phone } = response.data;
         Cookies.set("token", accessToken);
         Cookies.set("role", role.toLowerCase());
+        Cookies.set("name", name);
+        Cookies.set("phone", phone);
         setLoading(false);
         router.push(`/${role.toLowerCase()}`); // Redirect to role-based dashboard
       } else {

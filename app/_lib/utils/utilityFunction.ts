@@ -50,6 +50,13 @@ export const formatTimeToLocal = (timeStr: any, locale: any) => {
   };
 
   const formatter = new Intl.DateTimeFormat(locale, options);
-
   return formatter.format(time);
 };
+
+export const getNameFromCookies=()=>{
+  return Cookies.get('name')
+}
+export const getPhoneFromCookies=()=>{
+  return Cookies.get('phone')
+}
+

@@ -24,6 +24,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
 }) => {
   const [openOrderDetails, setOpenOrderDetails] = useState(false);
   const [singleOrder, setSingleOrder] = useState<OrderType | null>(null);
+  console.log("--->",orderList)
 
   const handleSingleOrder = async (orderId: string) => {
     setLoading(true);

@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 import { EyeIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 import ViewOrderDetails from "./ViewOrderDetails";
-import { formatDateToLocal } from "@/app/_lib/utils/utilityFunction";
+import {
+  formatDateToLocal,
+  formatTimeToLocal,
+} from "@/app/_lib/utils/utilityFunction";
 import { getSingleOrder } from "@/app/_lib/apiCall/manager/orderApi";
 import { OrderType } from "@/app/_types/FoodItemTypes";
 import Loader from "../common/Loader";
@@ -58,6 +61,9 @@ const OrderTable: React.FC<OrderTableProps> = ({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Creation Date
                 </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Creation Time
+                </th>
                 {/* <th scope="col" className="px-3 py-5 font-medium">
                   Actions
                 </th> */}
@@ -90,6 +96,9 @@ const OrderTable: React.FC<OrderTableProps> = ({
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(order.createdAt, "US")}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {formatTimeToLocal(order?.createdAt, "US")}
                   </td>
 
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">

@@ -33,6 +33,7 @@ export default function SellerPage() {
         orderList={orderList}
         loading={loading}
         setLoading={setLoading}
+        fetchData={fetchData}
       />
     </main>
   );

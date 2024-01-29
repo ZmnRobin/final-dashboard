@@ -18,10 +18,10 @@ const ViewOrderDetails: React.FC<ViewOrderDetailsProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 flex  items-center justify-center bg-black bg-opacity-50">
-      <div className="container flex flex-col rounded py-2 px-3 items-center border shadow-sm bg-white max-w-md">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-hidden">
+      <div className="container flex flex-col rounded py-2 px-3 items-center border shadow-sm bg-white max-w-md max-h-[70%] overflow-y-auto relative">
         <XCircleIcon
-          className="w-5 bg-red-50 hover:cursor-pointer place-self-end"
+          className="w-8 bg-red-50 hover:cursor-pointer absolute top-0 right-0"
           onClick={handleClose}
         />
         <p className="text-2xl font-bold text-center mb-2">FRESH RUSH</p>
@@ -44,22 +44,25 @@ const ViewOrderDetails: React.FC<ViewOrderDetailsProps> = ({
               <div className="w-full font-semibold">Price</div>
             </div>
             <hr />
-            {singleOrder.products?.map((orderedProduct) => (
-              <div key={orderedProduct._id} className="flex flex-row mb-1">
-                <p className="w-full line-clamp-1 break-words">
-                  {orderedProduct.name}
-                </p>
-                <p className="w-full"> {orderedProduct.quantity}</p>
-                <p className="w-full">
-                  {orderedProduct.quantity * orderedProduct.unitPrice}
-                </p>
-              </div>
-            ))}
+            {/* Wrap the mapped items in a scrollable container */}
+            <div className="overflow-y-auto max-h-[200px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+              {singleOrder.products?.map((orderedProduct) => (
+                <div key={orderedProduct._id} className="flex flex-row mb-1">
+                  <p className="w-full line-clamp-1 break-words">
+                    {orderedProduct.name}
+                  </p>
+                  <p className="w-full"> {orderedProduct.quantity}</p>
+                  <p className="w-full">
+                    {orderedProduct.quantity * orderedProduct.unitPrice}
+                  </p>
+                </div>
+              ))}
+            </div>
             <hr />
           </div>
         </div>
 
-        <div className="flex flex-col mt-2 text-sm w-3/4 ">
+        <div className="flex flex-col mt-2 text-sm w-3/4">
           <div className="mb-1">
             <p>Discount:</p>
           </div>

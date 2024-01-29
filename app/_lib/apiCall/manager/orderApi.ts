@@ -5,6 +5,8 @@ interface orderData {
     totalBill:number,
     status:string,
     discount: number;
+    issuedBy:string |undefined,
+    issuedPhone:string | undefined,
     // Add other properties as needed
 }
 

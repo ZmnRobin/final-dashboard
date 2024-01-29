@@ -40,3 +40,10 @@ export const getRoleFromCookies=() =>{
    return Cookies.get('role');
 }
 
+export const getNameFromCookies=()=>{
+  return Cookies.get('name')
+}
+export const getPhoneFromCookies=()=>{
+  return Cookies.get('phone')
+}
+

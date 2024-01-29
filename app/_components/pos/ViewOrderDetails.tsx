@@ -18,8 +18,8 @@ const ViewOrderDetails: React.FC<ViewOrderDetailsProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 flex  items-center justify-center bg-black bg-opacity-50">
-      <div className="container flex flex-col rounded py-2 px-3 items-center border shadow-sm bg-white max-w-md">
+    <div className="fixed inset-0 flex  items-center overflow-y-scroll justify-center bg-black bg-opacity-50">
+      <div className="container flex flex-col rounded py-2 px-3 items-center border shadow-sm bg-white max-w-md ">
         <XCircleIcon
           className="w-5 bg-red-50 hover:cursor-pointer place-self-end"
           onClick={handleClose}

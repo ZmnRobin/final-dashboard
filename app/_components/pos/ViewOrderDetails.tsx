@@ -19,7 +19,7 @@ const ViewOrderDetails: React.FC<ViewOrderDetailsProps> = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-hidden">
-      <div className="container flex flex-col rounded py-2 px-3 items-center border shadow-sm bg-white max-w-md max-h-[70%] overflow-y-auto relative">
+      <div className="container flex flex-col rounded py-2 px-3 items-center border shadow-sm bg-white w-2/6 max-h-[75%]  relative h-[calc(100vh_-_10px)] overflow-y-auto no-scrollbar">
         <XCircleIcon
           className="w-8 bg-red-50 hover:cursor-pointer absolute top-0 right-0"
           onClick={handleClose}
@@ -45,7 +45,7 @@ const ViewOrderDetails: React.FC<ViewOrderDetailsProps> = ({
             </div>
             <hr />
             {/* Wrap the mapped items in a scrollable container */}
-            <div className="overflow-y-auto max-h-[200px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            <div className="overflow-y-auto max-h-[200px] scrollbar-thin scrollbar-thumb-gray-300 no-scrollbar">
               {singleOrder.products?.map((orderedProduct) => (
                 <div key={orderedProduct._id} className="flex flex-row mb-1">
                   <p className="w-full line-clamp-1 break-words">

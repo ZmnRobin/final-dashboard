@@ -14,7 +14,6 @@ import {
 import { OrderType } from "@/app/_types/FoodItemTypes";
 import Loader from "../common/Loader";
 import toast from "react-hot-toast";
-import clsx from "clsx";
 
 interface OrderTableProps {
   orderList: Array<any>; // Replace 'any' with the specific type of your order objects

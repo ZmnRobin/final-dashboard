@@ -15,6 +15,7 @@ import {
 import { OrderType } from "@/app/_types/FoodItemTypes";
 import Loader from "../common/Loader";
 import toast from "react-hot-toast";
+import clsx from "clsx";
 
 interface OrderTableProps {
   orderList: Array<any>; // Replace 'any' with the specific type of your order objects
@@ -145,7 +146,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
                   </td>
 
                   <td className="whitespace-nowrap py-3 pl-6 pr-3 text-center">
-                    <div className="flex justify-end gap-3">
+                    <div className="flex justify-center gap-3">
                       <button className="group rounded-md border p-2 hover:bg-gray-100 relative">
                         <EyeIcon
                           className="w-5"
@@ -178,8 +179,8 @@ const OrderTable: React.FC<OrderTableProps> = ({
                               className={
                                 order.status !== "in progress" &&
                                 order.status === "completed"
-                                  ? "group rounded-md border p-2 bg-gray-300 relative"
-                                  : "group rounded-md border p-2 bg-green-300 relative"
+                                  ? "group rounded-md border p-2 bg-gray-300 relative "
+                                  : "group rounded-md border p-2 bg-green-300 relative "
                               }
                             >
                               <CheckIcon
@@ -197,7 +198,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
                           )}
                           {order.status === "completed" && (
                             <button
-                              className="group rounded-md border p-2 bg-green-100 w-full"
+                              className="group rounded-md border p-2  bg-green-100 w-5/12"
                               disabled={true}
                             >
                               Completed
@@ -205,7 +206,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
                           )}
                           {order.status === "cancelled" && (
                             <button
-                              className="group rounded-md border p-2 bg-red-100 w-full"
+                              className="group rounded-md border p-2 bg-red-100 w-5/12"
                               disabled={true}
                             >
                               Cancelled

@@ -5,6 +5,8 @@ interface orderData {
     totalBill:number,
     status:string,
     discount: number;
+    issuedBy:string |undefined,
+    issuedPhone:string | undefined,
     // Add other properties as needed
 }
 
@@ -36,6 +38,20 @@ export async function createNewOrder(orderData: orderData): Promise<any> {
 export async function getSingleOrder(orderId:string): Promise<any> {
     try {
       const response = await api.get(`/orders/${orderId}`);
+      if (response.status === 200 || response.status === 201) {
+        return response.data;
+      } else {
+        throw new Error('Failed to fetch single order');
+      }
+    } catch (error) {
+      throw new Error('Failed to fetch single order.');
+    }
+}
+export async function updateSingleOrderStatus(orderId:string,status:string): Promise<any> {
+    try {
+      const response = await api.patch(`/orders/${orderId}`,{
+        status:status
+      });
       if (response.status === 200 || response.status === 201) {
         return response.data;
       } else {

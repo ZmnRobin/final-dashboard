@@ -1,43 +1,82 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { EyeIcon } from "@heroicons/react/16/solid";
+import { EyeIcon, XMarkIcon, CheckIcon } from "@heroicons/react/16/solid";
 import Image from "next/image";
 import ViewOrderDetails from "./ViewOrderDetails";
 import {
   formatDateToLocal,
   formatTimeToLocal,
 } from "@/app/_lib/utils/utilityFunction";
-import { getSingleOrder } from "@/app/_lib/apiCall/manager/orderApi";
+import {
+  getSingleOrder,
+  updateSingleOrderStatus,
+} from "@/app/_lib/apiCall/manager/orderApi";
 import { OrderType } from "@/app/_types/FoodItemTypes";
 import Loader from "../common/Loader";
+import toast from "react-hot-toast";
+import clsx from "clsx";
 
 interface OrderTableProps {
   orderList: Array<any>; // Replace 'any' with the specific type of your order objects
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  fetchData: () => {};
 }
 
 const OrderTable: React.FC<OrderTableProps> = ({
   orderList,
   loading,
   setLoading,
+  fetchData,
 }) => {
   const [openOrderDetails, setOpenOrderDetails] = useState(false);
   const [singleOrder, setSingleOrder] = useState<OrderType | null>(null);
+  const [status, setStatus] = useState(false);
 
   const handleSingleOrder = async (orderId: string) => {
     setLoading(true);
     try {
       const res = await getSingleOrder(orderId);
       setSingleOrder(res);
-      // Assuming your component has a state for orderList and a function setOrderList
       setLoading(false);
       setOpenOrderDetails(true);
-      console.log(res, singleOrder);
     } catch (error) {
-      console.error("Error deleting order:", error);
-      // Handle error here (e.g., display error message)
+      console.error("Error fetching single order:", error);
       setLoading(false);
+    }
+  };
+
+  const updateOrderStatus = async (orderId: string, status: string) => {
+    setLoading(true);
+    try {
+      // Call the updateSingleOrderStatus function
+      await updateSingleOrderStatus(orderId, status).then(() => {
+        fetchData();
+        setLoading(false); // Fetch updated user list
+        status === "completed"
+          ? toast.success(`Order is ${status}.`, { duration: 1000 })
+          : toast.error(`Order is ${status}.`, { duration: 1000 });
+      });
+      // Update the local orderList or fetch the updated orderList
+      // Assuming you have a function setOrderList to update the orderList
+      // const updatedOrderList = await fetchOrderList(); // replace with your actual function
+      // setOrderList(updatedOrderList);
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      setLoading(false);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "in progress":
+        return "text-yellow-500"; // yellow color for in progress
+      case "completed":
+        return "text-green-500"; // green color for completed
+      case "cancelled":
+        return "text-red-500"; // red color for cancelled
+      default:
+        return "text-gray-500"; // default color for other statuses
     }
   };
 
@@ -64,9 +103,9 @@ const OrderTable: React.FC<OrderTableProps> = ({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Creation Time
                 </th>
-                {/* <th scope="col" className="px-3 py-5 font-medium">
+                <th scope="col" className="px-3 py-5 font-medium text-center">
                   Actions
-                </th> */}
+                </th>
               </tr>
             </thead>
             {/* {loading ? (<Loader/>):( */}
@@ -89,9 +128,13 @@ const OrderTable: React.FC<OrderTableProps> = ({
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    Seller {index + 1}
+                    {order.issuedBy}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                  <td
+                    className={`whitespace-nowrap px-3 py-3 ${getStatusColor(
+                      order.status
+                    )}`}
+                  >
                     {order.status}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
@@ -101,19 +144,58 @@ const OrderTable: React.FC<OrderTableProps> = ({
                     {formatTimeToLocal(order?.createdAt, "US")}
                   </td>
 
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                  <td className="whitespace-nowrap py-3 pl-6 pr-3 text-center">
                     <div className="flex justify-end gap-3">
-                      <button className="rounded-md border p-2 hover:bg-gray-100">
+                      <button className="group rounded-md border p-2 hover:bg-gray-100 relative">
                         <EyeIcon
                           className="w-5"
                           onClick={() => handleSingleOrder(order._id)}
                         />
+                        <span className="invisible group-hover:visible absolute top-[-30px] left-[-30px] bg-gray-500 text-white p-1 rounded-md">
+                          View Order Details
+                        </span>
+                      </button>
+                      <button
+                        className="group rounded-md border p-2 bg-red-100 hover:bg-red-300 relative"
+                        disabled={order.status !== "in progress"}
+                      >
+                        <XMarkIcon
+                          onClick={(e) =>
+                            updateOrderStatus(order._id, "cancelled")
+                          }
+                          className="w-5 text-red-700"
+                        />
+                        <span className="invisible group-hover:visible absolute top-[-30px] left-[-30px] bg-red-500 text-white p-1 rounded-md">
+                          Cancel Order
+                        </span>
+                      </button>
+
+                      <button
+                        className={
+                          order.status !== "in progress" &&
+                          order.status === "completed"
+                            ? "group rounded-md border p-2 bg-gray-300 relative"
+                            : "group rounded-md border p-2 bg-green-300 relative"
+                        }
+                      >
+                        <CheckIcon
+                          className={"w-5 text-green-700"}
+                          onClick={(e) =>
+                            updateOrderStatus(order._id, "completed")
+                          }
+                        />
+                        {order.status === "in progress" && (
+                          <span className="invisible group-hover:visible absolute top-[-30px] left-[-30px] bg-green-500 text-white p-1 rounded-md">
+                            Accept Order
+                          </span>
+                        )}
                       </button>
                     </div>
                   </td>
                 </tr>
               ))}
             </tbody>
+
             {/* )} */}
           </table>
         </div>

@@ -177,6 +177,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
                             ? "group rounded-md border p-2 bg-gray-300 relative"
                             : "group rounded-md border p-2 bg-green-300 relative"
                         }
+                        disabled={order.status !== "in progress"}
                       >
                         <CheckIcon
                           className={"w-5 text-green-700"}

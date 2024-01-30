@@ -6,6 +6,7 @@ import ViewOrderDetails from "./ViewOrderDetails";
 import {
   formatDateToLocal,
   formatTimeToLocal,
+  getRoleFromCookies,
 } from "@/app/_lib/utils/utilityFunction";
 import {
   getSingleOrder,
@@ -14,6 +15,7 @@ import {
 import { OrderType } from "@/app/_types/FoodItemTypes";
 import Loader from "../common/Loader";
 import toast from "react-hot-toast";
+import clsx from "clsx";
 
 interface OrderTableProps {
   orderList: Array<any>; // Replace 'any' with the specific type of your order objects
@@ -30,7 +32,7 @@ const OrderTable: React.FC<OrderTableProps> = ({
 }) => {
   const [openOrderDetails, setOpenOrderDetails] = useState(false);
   const [singleOrder, setSingleOrder] = useState<OrderType | null>(null);
-  const [status, setStatus] = useState(false);
+  const role = getRoleFromCookies();
 
   const handleSingleOrder = async (orderId: string) => {
     setLoading(true);
@@ -154,42 +156,64 @@ const OrderTable: React.FC<OrderTableProps> = ({
                           View Order Details
                         </span>
                       </button>
-                      <button
-                        className="group rounded-md border p-2 bg-red-100 hover:bg-red-300 relative"
-                        disabled={order.status !== "in progress"}
-                      >
-                        <XMarkIcon
-                          onClick={(e) =>
-                            updateOrderStatus(order._id, "cancelled")
-                          }
-                          className="w-5 text-red-700"
-                        />
-                        <span className="invisible group-hover:visible absolute top-[-30px] left-[-30px] bg-red-500 text-white p-1 rounded-md">
-                          Cancel Order
-                        </span>
-                      </button>
-
-                      <button
-                        className={
-                          order.status !== "in progress" &&
-                          order.status === "completed"
-                            ? "group rounded-md border p-2 bg-gray-300 relative"
-                            : "group rounded-md border p-2 bg-green-300 relative"
-                        }
-                        disabled={order.status !== "in progress"}
-                      >
-                        <CheckIcon
-                          className={"w-5 text-green-700"}
-                          onClick={(e) =>
-                            updateOrderStatus(order._id, "completed")
-                          }
-                        />
-                        {order.status === "in progress" && (
-                          <span className="invisible group-hover:visible absolute top-[-30px] left-[-30px] bg-green-500 text-white p-1 rounded-md">
-                            Accept Order
-                          </span>
-                        )}
-                      </button>
+                      {role === "seller" && (
+                        <>
+                          {order.status === "in progress" && (
+                            <button
+                              className="group rounded-md border p-2 bg-red-100 hover:bg-red-300 relative"
+                              disabled={order.status !== "in progress"}
+                            >
+                              <XMarkIcon
+                                onClick={(e) =>
+                                  updateOrderStatus(order._id, "cancelled")
+                                }
+                                className="w-5 text-red-700"
+                              />
+                              <span className="invisible group-hover:visible absolute top-[-30px] left-[-30px] bg-red-500 text-white p-1 rounded-md">
+                                Cancel Order
+                              </span>
+                            </button>
+                          )}
+                          {order.status === "in progress" && (
+                            <button
+                              className={
+                                order.status !== "in progress" &&
+                                order.status === "completed"
+                                  ? "group rounded-md border p-2 bg-gray-300 relative"
+                                  : "group rounded-md border p-2 bg-green-300 relative"
+                              }
+                            >
+                              <CheckIcon
+                                className={"w-5 text-green-700"}
+                                onClick={(e) =>
+                                  updateOrderStatus(order._id, "completed")
+                                }
+                              />
+                              {order.status === "in progress" && (
+                                <span className="invisible group-hover:visible absolute top-[-30px] left-[-30px] bg-green-500 text-white p-1 rounded-md">
+                                  Accept Order
+                                </span>
+                              )}
+                            </button>
+                          )}
+                          {order.status === "completed" && (
+                            <button
+                              className="group rounded-md border p-2 bg-green-100 w-full"
+                              disabled={true}
+                            >
+                              Completed
+                            </button>
+                          )}
+                          {order.status === "cancelled" && (
+                            <button
+                              className="group rounded-md border p-2 bg-red-100 w-full"
+                              disabled={true}
+                            >
+                              Cancelled
+                            </button>
+                          )}
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

@@ -37,23 +37,31 @@ const Table: React.FC<TableProps> = ({
   setLoading,
 }) => {
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [deleteUserName, seteDeleteUserName] = useState("");
+  const [deleteUserId, setDeleteUserId] = useState("");
 
   const handleDeleteUser = async (userId: string, name: string) => {
-    setOpenConfirmModal(true);
-    // setLoading(true);
-    // try {
-    //   // Delete user from the database
-    //   await deleteSingleUser(userId);
+    setLoading(true);
+    try {
+      // Delete user from the database
+      await deleteSingleUser(userId);
 
-    //   // Update the UI by removing the deleted user from the state
-    //   const updatedUserList = userList.filter((user) => user._id !== userId);
-    //   setUserList(updatedUserList);
-    //   setLoading(false);
-    //   toast.error(`Sadly you deleted ${name}.`);
-    // } catch (error) {
-    //   console.error("Error deleting user:", error);
-    //   // Handle error here (e.g., display error message)
-    // }
+      // Update the UI by removing the deleted user from the state
+      const updatedUserList = userList.filter((user) => user._id !== userId);
+      setOpenConfirmModal(false);
+      setUserList(updatedUserList);
+      setLoading(false);
+      toast.success(`Sadly you deleted ${name}.`);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      // Handle error here (e.g., display error message)
+    }
+  };
+
+  const handleSingleDelete = (id, name) => {
+    setOpenConfirmModal(true);
+    seteDeleteUserName(name);
+    setDeleteUserId(id);
   };
 
   return (
@@ -129,23 +137,25 @@ const Table: React.FC<TableProps> = ({
                           <TrashIcon
                             className="w-5"
                             onClick={() =>
-                              handleDeleteUser(user._id, user.name)
+                              handleSingleDelete(user._id, user.name)
                             }
                           />
                         </Link>
                       </div>
-                      {openConfirmModal && (
-                        <ConfirmModal
-                          setOpenConfirmModal={setOpenConfirmModal}
-                          username={user.name}
-                        />
-                      )}
                     </td>
                   </tr>
                 ))}
               </tbody>
             )}
           </table>
+          {openConfirmModal && (
+            <ConfirmModal
+              handleDeleteUser={handleDeleteUser}
+              setOpenConfirmModal={setOpenConfirmModal}
+              username={deleteUserName}
+              userId={deleteUserId}
+            />
+          )}
         </div>
       </div>
     </div>

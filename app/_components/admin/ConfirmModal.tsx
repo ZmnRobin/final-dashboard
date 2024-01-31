@@ -5,11 +5,15 @@ import React from "react";
 interface ConfirmModalProps {
   setOpenConfirmModal: React.Dispatch<React.SetStateAction<boolean>>;
   username: string | any;
+  handleDeleteUser: void;
+  userId: string | any;
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
   setOpenConfirmModal,
   username,
+  userId,
+  handleDeleteUser,
 }) => {
   const handleClose = () => {
     setOpenConfirmModal(false);
@@ -17,15 +21,24 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 overflow-hidden">
-      <div className="container flex flex-col rounded py-2 px-3 items-center border shadow-sm bg-white w-2/6 max-h-[75%]  relative h-[calc(100vh_-_10px)] overflow-y-auto no-scrollbar">
-        <XCircleIcon
-          className="w-7 bg-red-50 hover:cursor-pointer absolute top-0 right-0"
-          onClick={handleClose}
-        />
-        <p className="text-2xl font-bold text-center mb-2">FRESH RUSH</p>
-        <p className="text-xs mb-2">257/A Matikata Rd, Dhaka 1206</p>
-        <p className="text-xs mb-2">Phone: 01797819600</p>
-        <p className="text-sm text-center mt-2">Thanks for shopping</p>
+      <div className="flex flex-col justify-between bg-white h-2/6 w-2/6 items-end rounded px-3">
+        <div className="mx-auto my-6 text-xl font-semibold text-red-600">
+          Are You Sure You Want to Delete {username} ?
+        </div>
+        <div className="flex flex-row gap-4 mr-3 mb-4">
+          <button
+            onClick={handleClose}
+            className="border text-white rounded bg-red-400 px-3 py-2 text-base hover:bg-red-500"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => handleDeleteUser(userId, username)}
+            className="border text-white rounded bg-green-400 px-3 py-2 text-base hover:bg-green-500"
+          >
+            Confirm
+          </button>
+        </div>
       </div>
     </div>
   );

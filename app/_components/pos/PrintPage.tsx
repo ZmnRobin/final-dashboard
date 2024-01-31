@@ -6,14 +6,17 @@ import { createNewOrder } from "@/app/_lib/apiCall/manager/orderApi";
 import Loader from "../common/Loader";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { getNameFromCookies, getPhoneFromCookies } from "@/app/_lib/utils/utilityFunction";
+import {
+  getNameFromCookies,
+  getPhoneFromCookies,
+} from "@/app/_lib/utils/utilityFunction";
 
 export interface CartProps {
   cartItems: SelectedFoodItemType[];
   totalAmount: number;
 }
 const PrintPage: React.FC<CartProps> = (props: CartProps) => {
-  const router=useRouter()
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { cartItems, totalAmount } = props;
@@ -22,33 +25,32 @@ const PrintPage: React.FC<CartProps> = (props: CartProps) => {
     (acc, product) => acc + Number(product.unitPrice * product.quantity),
     0
   );
-  
+
   // setTotalAmount(totalPayment);
-  const placeOrder=async ()=>{
-    setLoading(true)
-    const orderData={
+  const placeOrder = async () => {
+    setLoading(true);
+    const orderData = {
       products: cartItems,
       totalBill: totalPayment,
       status: "in progress",
       discount: 0,
-      issuedBy:getNameFromCookies(),
-      issuedPhone:getPhoneFromCookies()
+      issuedBy: getNameFromCookies(),
+      issuedPhone: getPhoneFromCookies(),
+    };
+
+    console.log("order data", orderData);
+    setError("");
+    try {
+      await createNewOrder(orderData).then(() => {
+        setLoading(false); // Fetch updated user list
+        toast.success("Order placed successfully.");
+        router.push("/seller");
+      });
+    } catch (error) {
+      console.error("Error handling user data:", error);
+      setError("An error occurred while creating the new user!");
     }
-
-    console.log("order data",orderData)
-      setError('')
-      try {
-          await createNewOrder(orderData).then(() => {
-            setLoading(false) // Fetch updated user list
-            toast.success("Order placed successfully.")
-            router.push('/seller')
-          });
-
-      } catch (error) {
-        console.error('Error handling user data:', error);
-        setError('An error occurred while creating the new user!');
-      }
-  }
+  };
 
   return (
     <div className="w-auto">
@@ -91,9 +93,7 @@ const PrintPage: React.FC<CartProps> = (props: CartProps) => {
                     </Text>
                     <Text className="w-2/12 pl-1">{cartProduct.quantity}</Text>
                     <Text className="w-2/12">
-                      {
-                        (cartProduct.unitPrice * cartProduct.quantity)
-                      }
+                      {cartProduct.unitPrice * cartProduct.quantity}
                     </Text>
                     {/* <Text>{cartProduct.totalAmount}</Text> */}
                     <Br />
@@ -127,10 +127,13 @@ const PrintPage: React.FC<CartProps> = (props: CartProps) => {
           <Cut />
         </Printer>
       </div>
-      {loading && <Loader/>}
+      {loading && <Loader />}
       <div className=" flex justify-between mx-4">
-        <button onClick={placeOrder} className="mx-auto border rounded bg-blue-800 text-white text-xl px-3 py-2 hover:scale-95">
-          Print
+        <button
+          onClick={placeOrder}
+          className="mx-auto border rounded bg-blue-800 text-white text-xl px-3 py-2 hover:scale-95"
+        >
+          Checkout
         </button>
       </div>
     </div>

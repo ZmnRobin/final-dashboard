@@ -1,8 +1,11 @@
-import React from "react";
+
+"use client";
+import React, { useEffect, useState } from "react";
 import {
   BanknotesIcon,
-  XMarkIcon,
-  CheckIcon,
+  CheckCircleIcon,
+  UserGroupIcon,
+  XCircleIcon,
 } from "@heroicons/react/24/outline";
 
 interface CardProps {
@@ -21,6 +24,7 @@ const iconMap = {
 
 const Card: React.FC<CardProps> = ({ title, value, type, color }) => {
   const Icon = iconMap[type];
+
   return (
     <div
       className={`rounded-xl bg-${color ? color : "gray"}-300 p-2 shadow-sm`}

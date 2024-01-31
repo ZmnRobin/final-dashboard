@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Role from "./Role";
@@ -11,6 +11,7 @@ import Link from "next/link";
 import { deleteSingleUser } from "../../_lib/apiCall/admin/userApi";
 import Loader from "../common/Loader";
 import toast from "react-hot-toast";
+import ConfirmModal from "./ConfirmModal";
 
 interface User {
   _id: string;
@@ -35,21 +36,24 @@ const Table: React.FC<TableProps> = ({
   loading,
   setLoading,
 }) => {
-  const handleDeleteUser = async (userId: string, name: string) => {
-    setLoading(true);
-    try {
-      // Delete user from the database
-      await deleteSingleUser(userId);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
-      // Update the UI by removing the deleted user from the state
-      const updatedUserList = userList.filter((user) => user._id !== userId);
-      setUserList(updatedUserList);
-      setLoading(false);
-      toast.error(`Sadly you deleted ${name}.`);
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      // Handle error here (e.g., display error message)
-    }
+  const handleDeleteUser = async (userId: string, name: string) => {
+    setOpenConfirmModal(true);
+    // setLoading(true);
+    // try {
+    //   // Delete user from the database
+    //   await deleteSingleUser(userId);
+
+    //   // Update the UI by removing the deleted user from the state
+    //   const updatedUserList = userList.filter((user) => user._id !== userId);
+    //   setUserList(updatedUserList);
+    //   setLoading(false);
+    //   toast.error(`Sadly you deleted ${name}.`);
+    // } catch (error) {
+    //   console.error("Error deleting user:", error);
+    //   // Handle error here (e.g., display error message)
+    // }
   };
 
   return (
@@ -130,6 +134,12 @@ const Table: React.FC<TableProps> = ({
                           />
                         </Link>
                       </div>
+                      {openConfirmModal && (
+                        <ConfirmModal
+                          setOpenConfirmModal={setOpenConfirmModal}
+                          username={user.name}
+                        />
+                      )}
                     </td>
                   </tr>
                 ))}

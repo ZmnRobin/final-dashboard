@@ -46,7 +46,6 @@ const UserForm: React.FC<UserFormProps> = ({
           // Handle error here
         }
       };
-
       fetchUserData();
     }
   }, [isUpdateMode, userId, reset]);
@@ -79,12 +78,14 @@ const UserForm: React.FC<UserFormProps> = ({
           fetchData();
           setLoading(false); // Fetch updated user list
           closeModal();
-          toast.success("User added successfully.", { duration: 2000 });
+          toast.success("User created successfully.", { duration: 2000 });
         });
       }
-    } catch (error) {
+    } catch (error: any) {
+      setLoading(false);
       console.error("Error handling user data:", error);
-      setError("An error occurred while creating the new user!");
+      toast.error("Failed to create user!");
+      setError("Failed to create user.");
     }
   };
 

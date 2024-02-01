@@ -1,39 +1,52 @@
-'use client'
+"use client";
 import {
   UserGroupIcon,
-  Cog6ToothIcon,
   UserCircleIcon,
   PrinterIcon,
   ListBulletIcon,
-  QueueListIcon
-} from '@heroicons/react/24/outline';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import clsx from 'clsx';
-import { getRoleFromCookies } from '@/app/_lib/utils/utilityFunction';
+  QueueListIcon,
+} from "@heroicons/react/24/outline";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
+import { getRoleFromCookies } from "@/app/_lib/utils/utilityFunction";
+import { useEffect, useState } from "react";
 
+type LinkType = {
+  name: string;
+  href: string;
+  icon: any;
+};
 
 const admin = [
-  {name: 'Overview', href: '/admin', icon: UserCircleIcon },
-  {name: 'Users', href: '/admin/users',icon: UserGroupIcon,},
+  { name: "Overview", href: "/admin", icon: UserCircleIcon },
+  { name: "Users", href: "/admin/users", icon: UserGroupIcon },
 ];
 const manager = [
-  {name: 'Overview', href: '/manager', icon: UserCircleIcon },
-  {name: 'Product List', href: '/manager/products',icon: QueueListIcon,},
-  {name: 'Order List', href: '/manager/order',icon: ListBulletIcon,},
+  { name: "Overview", href: "/manager", icon: UserCircleIcon },
+  { name: "Product List", href: "/manager/products", icon: QueueListIcon },
+  { name: "Order List", href: "/manager/order", icon: ListBulletIcon },
 ];
 const seller = [
-  {name: 'Orders', href: '/seller',icon: QueueListIcon,},
-  {name: 'Sell', href: '/seller/pos', icon: PrinterIcon },
+  { name: "Orders", href: "/seller", icon: QueueListIcon },
+  { name: "Sell", href: "/seller/pos", icon: PrinterIcon },
 ];
 
 export default function NavLinks() {
-  const pathname=usePathname();
-  const role=getRoleFromCookies()
+  const pathname = usePathname();
+  const role = getRoleFromCookies();
+  const [links, setLinks] = useState<LinkType[]>();
 
-  // Define the links based on the user's role using a ternary operator
-  const links = role === "admin" ? admin : role === "manager" ? manager : role === "seller"? seller : null;
-  
+  useEffect(() => {
+    if (role === "admin") {
+      setLinks(admin);
+    } else if (role === "manager") {
+      setLinks(manager);
+    } else if (role === "seller") {
+      setLinks(seller);
+    }
+  }, [role]);
+
   return (
     <>
       {links?.map((link) => {
@@ -43,10 +56,10 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
+              "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3",
               {
-                'bg-sky-100 text-blue-600': pathname === link.href,
-              },
+                "bg-sky-100 text-blue-600": pathname === link.href,
+              }
             )}
           >
             <LinkIcon className="w-6" />
